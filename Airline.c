@@ -128,6 +128,62 @@ Flight* findFlight(const Airline* pComp, const Flight* pFlight)
 	return pFound;
 }
 
+int     writeToBinFile(const Airline* pComp)
+{
+	FILE* fp;
+	fp = fopen(BIN_FILE_NAME,"wb");
+	if (!fp)
+		return 0;
+
+	int len = (int)strlen(pComp->name)+1;
+	if (fwrite(&len,sizeof(int),1,fp) != 1)
+	{
+		fclose(fp);
+		return 0;
+	}
+		
+	if (fwrite(pComp->name,sizeof(char*),1,fp) != 1)
+	{
+		fclose(fp);
+		return 0;
+	}
+	
+	if (fwrite(pComp->planeCount,sizeof(int),1,fp) != 1)
+	{
+		fclose(fp);
+		return 0;
+	}
+	
+	if (fwrite(pComp->planeCount,sizeof(Plane),1,fp) != 1)
+	{
+		fclose(fp);
+		return 0;
+	}
+
+	for (int i = 0; i < pComp->planeCount; i++)
+	{
+		if (!writePlaneToBinFile(fp,&pComp->planeArr[i]))
+		{
+			fclose(fp);
+			return 0;
+		}
+	}
+
+	if (fwrite(pComp->flightCount,sizeof(int),1,fp) != 1)
+	{
+		fclose(fp);
+		return 0;
+	}
+
+	for (int i = 0; i < pComp->flightCount; i++)
+	{
+		if (!writeFlightToBinFile(fp,pComp->flightArr[i]))
+		{
+			fclose(fp);
+			return 0;
+		}
+	}
+}
 
 void printCompany(const Airline* pComp)
 {
