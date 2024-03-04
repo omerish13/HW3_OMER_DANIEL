@@ -64,6 +64,22 @@ Plane* findPlaneBySN(Plane* planeArr, int count, int sn)
 	return NULL;
 }
 
+int     writePlaneToBinFile(FILE* fp, const Plane* pPlane)
+{	
+	if (fwrite(pPlane->serialNum,sizeof(int),1,fp) != 1)
+		return 0;
+	int len = (int)strlen(PlaneTypeStr[pPlane->type])+1;
+	if (fwrite(&len,sizeof(int),1,fp) != 1)
+		return 0;
+	if (fwrite(&PlaneTypeStr[pPlane->type],sizeof(char*),1,fp) != 1)
+		return 0;
+	return 1;
+	
+	
+	
+
+}
+
 void	printPlane(const Plane* pPlane)
 {
 	printf("Plane: serial number:%d, type %s\n",pPlane->serialNum, PlaneTypeStr[pPlane->type]);

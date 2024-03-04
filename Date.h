@@ -12,6 +12,7 @@ typedef struct
 
 void	getCorrectDate(Date* pDate);
 int		checkDate(char* date, Date* pDate);
+int     compareDate(const Date d1, const Date d2);
 void	printDate(const Date* pDate);
 
 #endif
