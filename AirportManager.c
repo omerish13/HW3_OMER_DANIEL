@@ -92,6 +92,27 @@ int checkUniqeCode(const char* code,const AirportManager* pManager)
 	return 1;
 }
 
+int     writeAirportManagerToTextFile(AirportManager* pManager)
+{
+	NODE* pNode = &pManager->airportsList->head;
+	FILE* fp;
+	fp = fopen(FILE_NAME,"w");
+	if (!fp)
+		return 0;
+	
+	fprintf(fp,"%d\n",L_length(pNode));
+
+	while (pNode)
+	{
+		writeAirportToTextFile(fp,pNode);
+		pNode = pNode->next;
+	}
+
+	fclose(fp);
+	return 1;
+	
+	
+}
 
 void	printAirports(const AirportManager* pManager)
 {

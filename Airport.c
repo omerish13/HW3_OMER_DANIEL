@@ -38,6 +38,11 @@ int	initAirportNoCode(Airport* pPort)
 	return 1;
 }
 
+void     writeAirportToTextFile(FILE* fp, Airport* pPort)
+{
+	fprintf(fp,"%s\t%s\t%s\n",pPort->name,pPort->country,pPort->code);
+}
+
 void	printAirport(const Airport* pPort)
 {
 	printf("Airport name:%-20s\t", pPort->name);

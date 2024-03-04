@@ -18,6 +18,7 @@ char*	allocateRightLength(char** wordsArray,int count,int totalLength);
 void	changeNameOneWord(char* name, const char* word);
 void	changeName(char* name,int count, char** wordsArray);
 
+void    writeAirportToTextFile(FILE* fp, Airport* pPort);
 void    getAirportCode(char* code);
 void	printAirport(const Airport* pPort);
 void	freeAirport(Airport* pPort);
