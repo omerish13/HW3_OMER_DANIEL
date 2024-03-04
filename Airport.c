@@ -37,7 +37,19 @@ int	initAirportNoCode(Airport* pPort)
 		return 0;
 	return 1;
 }
-
+Airport* readAirportFromTextFile(FILE* fp, Airport* pPort)
+{
+	char name[255] = {0}, country[255] = {0};
+	if (fscanf(fp,"%s%s%s",name,country,pPort->code) != 3)
+		return 0;
+	pPort->name = strdup(name);
+	if (!pPort->name)
+		return 0;
+	pPort->country = strdup(country);
+	if (!pPort->country)
+		return 0;
+	return 1;
+}
 void     writeAirportToTextFile(FILE* fp, Airport* pPort)
 {
 	fprintf(fp,"%s\t%s\t%s\n",pPort->name,pPort->country,pPort->code);

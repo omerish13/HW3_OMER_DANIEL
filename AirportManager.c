@@ -6,11 +6,44 @@
 #include "AirportManager.h"
 #include "General.h"
 
-int	initManager(AirportManager* pManager)
-{
-	return (int)L_init(pManager->airportsList);
-}
+// int	initManager(AirportManager* pManager)
+// {
+// 	return (int)L_init(pManager->airportsList);
+// }
 
+int		initManager(AirportManager* pManager, const char* fileName)
+{
+	FILE* fp = fopen(fileName, "r");
+	int res = (int)L_init(pManager->airportsList);
+	if (!fp)
+	{
+		if (res)
+			return 2;
+		return 0;
+	}
+	int len = 0;
+	if (scanf(fp,"%d",len) != 1)
+	{
+		fclose(fp);
+		if (res)
+			return 2;
+		return 0;
+	}
+	NODE* pNode = &pManager->airportsList->head;
+	for (int i = 0; i < len; i++)
+	{
+		if (!readAirportFromTextFile(fp,pNode))
+		{
+			freeAirportArr(pManager);
+			fclose(fp);
+			return 2;
+		}
+	}
+
+	fclose(fp);
+	return 1;
+	
+}
 int	addAirport(AirportManager* pManager)
 {
 	Airport* pPort  = (Airport*)calloc(1, sizeof(Airport));
