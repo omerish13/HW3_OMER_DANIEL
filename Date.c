@@ -45,6 +45,27 @@ int	 checkDate(char* date, Date* pDate)
 	return 1;
 }
 
+int     compareDate(const Date d1, const Date d2)
+{
+	if (d1.year > d2.year)
+		return 1;
+	else if (d1.year == d2.year)
+	{
+		if (d1.month > d2.month)
+			return 1;
+		else if (d1.month == d2.month)
+		{
+			if (d1.day > d2.day)
+			{
+				return 1;
+			}
+			else if (d1.day == d2.day)
+				return 0;
+		}
+	}
+	return -1;
+}
+
 void printDate(const Date* pDate)
 {
 	printf("Date: %d/%d/%d", pDate->day, pDate->month, pDate->year);

@@ -18,7 +18,7 @@ void	initAirline(Airline* pComp)
 
 int	addFlight(Airline* pComp,const AirportManager* pManager)
 {
-	if (pManager->airportsCount < 2)
+	if (L_length(pManager->airportsList) < 2)
 	{
 		printf("There are not enough airport to set a flight\n");
 		return 0;
@@ -72,6 +72,45 @@ Plane* FindAPlane(Airline* pComp)
 	} while (temp == NULL);
 	 
 	return temp;
+}
+
+int		compareBySourceCode(const void *f1, const void *f2)
+{
+	char* ch_f1 = *((char**)((Flight*)f1)->sourceCode);
+	char* ch_f2 = *((char**)((Flight*)f2)->sourceCode);
+
+	return strcmp(ch_f1,ch_f2);
+}
+
+int		compareByDestCode(const void *f1, const void *f2)
+{
+	char* ch_f1 = *((char**)((Flight*)f1)->destCode);
+	char* ch_f2 = *((char**)((Flight*)f2)->destCode);
+
+	return strcmp(ch_f1,ch_f2);
+}
+
+int		compareByDate(const void *f1, const void *f2)
+{
+	Date d_f1 = ((Flight*)f1)->date;
+	Date d_f2 = ((Flight*)f2)->date;
+
+	return compareDate(d_f1,d_f2);
+}
+
+void    sortFlights(Airline* company)
+{
+	if (company->flightCount < 1)
+		return;
+	
+	if ((int)(company->sortType) == 0)
+		qsort(company->flightArr,company->flightCount,sizeof(Flight),compareBySourceCode);
+	else if ((int)(company->sortType) == 1)
+		qsort(company->flightArr,company->flightCount,sizeof(Flight),compareByDestCode);
+	else if ((int)(company->sortType) == 2)
+		qsort(company->flightArr,company->flightCount,sizeof(Flight),compareByDate);
+	return;
+	
 }
 
 

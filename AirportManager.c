@@ -44,11 +44,11 @@ void insertAirport(Airport* pPort, LIST* airportsList)
 		airport = (Airport*)pNode->key;
 		nextAirport = (Airport*)pNode->next->key;
 		if (!airport || !nextAirport)
-			return;
+			break;
 		if (strcmp(airport->code,pPort->code) >= 0 && strcmp(pPort->code,nextAirport->code))
 		{
 			L_insert(pNode,pPort);
-			return 1;
+			return;
 		}
 		pNode = pNode->next;
 	}
@@ -113,5 +113,5 @@ void	freeManager(AirportManager* pManager)
 
 void	freeAirportArr(AirportManager* pManager)
 {
-	L_free(pManager->airportsList);
+	L_free(pManager->airportsList,freeAirport);
 }
