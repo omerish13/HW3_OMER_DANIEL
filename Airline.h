@@ -23,7 +23,7 @@ int		compareBySourceCode(const void *f1, const void *f2);
 int		compareByDestCode(const void *f1, const void *f2);
 int		compareByDate(const void *f1, const void *f2);
 void    sortFlights(Airline* pComp);
-Flight* findFlight(const Airline* pComp);
+Flight* findFlight(const Airline* pComp, const Flight* pFlight);
 void	printCompany(const Airline* pComp);
 void	printFlightArr(Flight** arr, int size);
 void	printPlanesArr(Plane* arr,int size);
