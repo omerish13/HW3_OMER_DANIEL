@@ -14,11 +14,12 @@ void	initAirline(Airline* pComp)
 	pComp->flightCount = 0;
 	pComp->planeArr = NULL;
 	pComp->planeCount = 0;
+	pComp->sortType = notSorted;
 }
 
 int	addFlight(Airline* pComp,const AirportManager* pManager)
 {
-	if (pManager->airportsCount < 2)
+	if (L_length(pManager->airportsList) < 2)
 	{
 		printf("There are not enough airport to set a flight\n");
 		return 0;
@@ -74,6 +75,115 @@ Plane* FindAPlane(Airline* pComp)
 	return temp;
 }
 
+int		compareBySourceCode(const void *f1, const void *f2)
+{
+	char* ch_f1 = *((char**)((Flight*)f1)->sourceCode);
+	char* ch_f2 = *((char**)((Flight*)f2)->sourceCode);
+
+	return strcmp(ch_f1,ch_f2);
+}
+
+int		compareByDestCode(const void *f1, const void *f2)
+{
+	char* ch_f1 = *((char**)((Flight*)f1)->destCode);
+	char* ch_f2 = *((char**)((Flight*)f2)->destCode);
+
+	return strcmp(ch_f1,ch_f2);
+}
+
+int		compareByDate(const void *f1, const void *f2)
+{
+	Date d_f1 = ((Flight*)f1)->date;
+	Date d_f2 = ((Flight*)f2)->date;
+
+	return compareDate(d_f1,d_f2);
+}
+
+void    sortFlights(Airline* pComp)
+{
+	if (pComp->flightCount < 2)
+		return;
+	
+	if ((int)(pComp->sortType) == 0)
+		qsort(pComp->flightArr,pComp->flightCount,sizeof(Flight),compareBySourceCode);
+	else if ((int)(pComp->sortType) == 1)
+		qsort(pComp->flightArr,pComp->flightCount,sizeof(Flight),compareByDestCode);
+	else if ((int)(pComp->sortType) == 2)
+		qsort(pComp->flightArr,pComp->flightCount,sizeof(Flight),compareByDate);
+	return;
+	
+}
+
+Flight* findFlight(const Airline* pComp, const Flight* pFlight)
+{
+	if (pComp->flightArr < 1 || pComp->sortType == numOfSorts - 1)
+		return NULL;
+	Flight* pFound = NULL;
+	if ((int)(pComp->sortType) == 0)
+		pFound = (Flight*)bsearch(pFlight,pComp->flightArr,pComp->flightCount,sizeof(Flight),compareBySourceCode);
+	else if ((int)(pComp->sortType) == 1)
+		pFound = (Flight*)bsearch(pFlight,pComp->flightArr,pComp->flightCount,sizeof(Flight),compareByDestCode);
+	else if ((int)(pComp->sortType) == 2)
+		pFound = (Flight*)bsearch(pFlight,pComp->flightArr,pComp->flightCount,sizeof(Flight),compareByDate);
+	return pFound;
+}
+
+int     writeToBinFile(const Airline* pComp)
+{
+	FILE* fp;
+	fp = fopen(BIN_FILE_NAME,"wb");
+	if (!fp)
+		return 0;
+
+	int len = (int)strlen(pComp->name)+1;
+	if (fwrite(&len,sizeof(int),1,fp) != 1)
+	{
+		fclose(fp);
+		return 0;
+	}
+		
+	if (fwrite(pComp->name,sizeof(char*),1,fp) != 1)
+	{
+		fclose(fp);
+		return 0;
+	}
+	
+	if (fwrite(pComp->planeCount,sizeof(int),1,fp) != 1)
+	{
+		fclose(fp);
+		return 0;
+	}
+	
+	if (fwrite(pComp->planeCount,sizeof(Plane),1,fp) != 1)
+	{
+		fclose(fp);
+		return 0;
+	}
+
+	for (int i = 0; i < pComp->planeCount; i++)
+	{
+		if (!writePlaneToBinFile(fp,&pComp->planeArr[i]))
+		{
+			fclose(fp);
+			return 0;
+		}
+	}
+
+	if (fwrite(pComp->flightCount,sizeof(int),1,fp) != 1)
+	{
+		fclose(fp);
+		return 0;
+	}
+
+	for (int i = 0; i < pComp->flightCount; i++)
+	{
+		if (!writeFlightToBinFile(fp,pComp->flightArr[i]))
+		{
+			fclose(fp);
+			return 0;
+		}
+	}
+}
 
 void printCompany(const Airline* pComp)
 {
