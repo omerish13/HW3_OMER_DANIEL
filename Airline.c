@@ -14,6 +14,7 @@ void	initAirline(Airline* pComp)
 	pComp->flightCount = 0;
 	pComp->planeArr = NULL;
 	pComp->planeCount = 0;
+	pComp->sortType = notSorted;
 }
 
 int	addFlight(Airline* pComp,const AirportManager* pManager)
@@ -98,19 +99,33 @@ int		compareByDate(const void *f1, const void *f2)
 	return compareDate(d_f1,d_f2);
 }
 
-void    sortFlights(Airline* company)
+void    sortFlights(Airline* pComp)
 {
-	if (company->flightCount < 1)
+	if (pComp->flightCount < 2)
 		return;
 	
-	if ((int)(company->sortType) == 0)
-		qsort(company->flightArr,company->flightCount,sizeof(Flight),compareBySourceCode);
-	else if ((int)(company->sortType) == 1)
-		qsort(company->flightArr,company->flightCount,sizeof(Flight),compareByDestCode);
-	else if ((int)(company->sortType) == 2)
-		qsort(company->flightArr,company->flightCount,sizeof(Flight),compareByDate);
+	if ((int)(pComp->sortType) == 0)
+		qsort(pComp->flightArr,pComp->flightCount,sizeof(Flight),compareBySourceCode);
+	else if ((int)(pComp->sortType) == 1)
+		qsort(pComp->flightArr,pComp->flightCount,sizeof(Flight),compareByDestCode);
+	else if ((int)(pComp->sortType) == 2)
+		qsort(pComp->flightArr,pComp->flightCount,sizeof(Flight),compareByDate);
 	return;
 	
+}
+
+Flight* findFlight(const Airline* pComp, const Flight* pFlight)
+{
+	if (pComp->flightArr < 1 || pComp->sortType == numOfSorts - 1)
+		return NULL;
+	Flight* pFound = NULL;
+	if ((int)(pComp->sortType) == 0)
+		pFound = (Flight*)bsearch(pFlight,pComp->flightArr,pComp->flightCount,sizeof(Flight),compareBySourceCode);
+	else if ((int)(pComp->sortType) == 1)
+		pFound = (Flight*)bsearch(pFlight,pComp->flightArr,pComp->flightCount,sizeof(Flight),compareByDestCode);
+	else if ((int)(pComp->sortType) == 2)
+		pFound = (Flight*)bsearch(pFlight,pComp->flightArr,pComp->flightCount,sizeof(Flight),compareByDate);
+	return pFound;
 }
 
 
