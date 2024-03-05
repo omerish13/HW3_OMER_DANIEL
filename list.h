@@ -33,6 +33,6 @@ const NODE* L_find(const NODE* pNode, DATA Value);		// return a pointer to the n
 
 BOOL L_free(LIST* pList, void(*freeFunc)(void*));					// free list memory
 
-int L_print(const LIST* pList);					// print the list content
+int L_print(const LIST* pList, void(*print)(const void*));					// print the list content
 
 #endif

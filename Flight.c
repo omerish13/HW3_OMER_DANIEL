@@ -52,9 +52,7 @@ int 	readFlightFromBFile(FILE* fp, Flight* pFlight)
 	int len;
 	if (fread(&len,sizeof(int),1,fp) != 1)
 		return 0;
-	pFlight->sourceCode = (char*)malloc(len* sizeof(char));
-	if (!pFlight->sourceCode)
-		return 0;
+	
 	if (fread(pFlight->sourceCode,sizeof(char),len,fp) != len)
 	{
 		free(pFlight->sourceCode);
@@ -62,12 +60,7 @@ int 	readFlightFromBFile(FILE* fp, Flight* pFlight)
 	}
 	if (fread(&len,sizeof(int),1,fp) != 1)
 		return 0;
-	pFlight->destCode = (char*)malloc(len* sizeof(char));
-	if (!pFlight->destCode)
-	{
-		free(pFlight->sourceCode);
-		return 0;
-	}
+	
 	if (fread(pFlight->destCode,sizeof(char),len,fp) != len)
 	{
 		free(pFlight->sourceCode);
@@ -114,15 +107,16 @@ int     writeFlightToBinFile(FILE* fp, const Flight* pFlight)
 	if (fwrite(pFlight->destCode,sizeof(char*),1,fp) != 1)
 		return 0;
 
-	if (fwrite(pFlight->flightPlane.serialNum,sizeof(int),1,fp) != 1)
+	if (fwrite(&pFlight->flightPlane.serialNum,sizeof(int),1,fp) != 1)
 		return 0;
 		
-	if (fwrite(pFlight->date.day,sizeof(int),1,fp) != 1)
+	if (fwrite(&pFlight->date.day,sizeof(int),1,fp) != 1)
 		return 0;
-	if (fwrite(pFlight->date.month,sizeof(int),1,fp) != 1)
+	if (fwrite(&pFlight->date.month,sizeof(int),1,fp) != 1)
 		return 0;
-	if (fwrite(pFlight->date.year,sizeof(int),1,fp) != 1)
+	if (fwrite(&pFlight->date.year,sizeof(int),1,fp) != 1)
 		return 0;
+	return 1;
 }
 
 void	printFlight(const Flight* pFlight)

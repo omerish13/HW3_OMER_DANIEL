@@ -30,7 +30,7 @@ int		compareByDestCode(const void *f1, const void *f2);
 int		compareByDate(const void *f1, const void *f2);
 int    	sortFlights(Airline* pComp);
 void 	sortFlight(Airline* pComp);
-Flight* findFlightBSearch(const Airline* pComp, const Flight* pFlight);
+Flight** findFlightBSearch(const Airline* pComp, const Flight* pFlight);
 void 	findFlight(const Airline* pComp);
 int     saveAirlineToFile(const Airline* pComp, const char* fileName);
 void	printCompany(const Airline* pComp);
