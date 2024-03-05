@@ -125,11 +125,11 @@ int checkUniqeCode(const char* code,const AirportManager* pManager)
 	return 1;
 }
 
-int     writeAirportManagerToTextFile(AirportManager* pManager)
+int saveManagerToFile(const AirportManager* pManager, const char* fileName)
 {
 	NODE* pNode = &pManager->airportsList->head;
 	FILE* fp;
-	fp = fopen(FILE_NAME,"w");
+	fp = fopen(fileName,"w");
 	if (!fp)
 		return 0;
 	

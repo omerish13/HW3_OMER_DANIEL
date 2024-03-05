@@ -63,10 +63,26 @@ Plane* findPlaneBySN(Plane* planeArr, int count, int sn)
 			return &planeArr[i];
 	return NULL;
 }
-
+int 	readPlaneFromBFile(FILE* fp, Plane* pPlane)
+{
+	if (fread(&pPlane->serialNum,sizeof(int),1,fp) != 1)
+		return 0;
+	int len;
+	if (fread(&len,sizeof(int),1,fp) != 1)
+		return 0;
+	pPlane->type = (char*)malloc(len* sizeof(char));
+	if (!pPlane->type)
+		return 0;
+	if (fread(pPlane->type,sizeof(char),len,fp) != len)
+	{
+		free(pPlane->type);
+		return 0;
+	}
+	return 1;
+}
 int     writePlaneToBinFile(FILE* fp, const Plane* pPlane)
 {	
-	if (fwrite(pPlane->serialNum,sizeof(int),1,fp) != 1)
+	if (fwrite(&pPlane->serialNum,sizeof(int),1,fp) != 1)
 		return 0;
 	int len = (int)strlen(PlaneTypeStr[pPlane->type])+1;
 	if (fwrite(&len,sizeof(int),1,fp) != 1)
