@@ -6,6 +6,8 @@
 #include "Airport.h"
 #include "General.h"
 
+const char* sortOptions[numOfSorts - 1] = { "Sort by source code","Sort by dest code","Sort by date"};
+
 void	initAirline(Airline* pComp)
 {
 	//printf("-----------  Init Airline\n");

@@ -7,7 +7,7 @@
 #define BIN_FILE_NAME "airline.bin"
 
 typedef enum { sortBySourceCode, sortByDestCode, sortByDate, notSorted, numOfSorts } enumSort;
-const char* sortOptions[numOfSorts] = { "Sort by source code","Sort by dest code","Sort by date"};
+
 
 typedef struct
 {
