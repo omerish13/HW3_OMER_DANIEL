@@ -49,7 +49,13 @@ int initAirlineFromFile(Airline* pComp, AirportManager* pManager, const char* fi
 		fclose(fp);
 		return 0;
 	}
-
+	pComp->planeArr = (Plane*)realloc(pComp->planeArr,pComp->planeCount * sizeof(Plane));
+	if (!pComp->planeArr)
+	{
+		free(pComp->name);
+		fclose(fp);
+		return 0;
+	}
 	for (int i = 0; i < pComp->planeCount; i++)
 	{
 		if (!readPlaneFromBFile(fp,&pComp->planeArr[i]))
@@ -68,7 +74,15 @@ int initAirlineFromFile(Airline* pComp, AirportManager* pManager, const char* fi
 		fclose(fp);
 		return 0;
 	}
-
+	pComp->flightArr = (Flight**)realloc(pComp->flightArr,pComp->planeCount * sizeof(Flight*));
+	if (!pComp->flightArr)
+	{
+		free(pComp->name);
+		freePlanes(pComp->planeArr,pComp->planeCount);
+		fclose(fp);
+		return 0;
+	}
+	
 	for (int i = 0; i < pComp->flightCount; i++)
 	{
 		if (!readFlightFromBFile(fp,pComp->flightArr[i]))

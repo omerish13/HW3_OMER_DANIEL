@@ -49,24 +49,23 @@ int		isPlaneTypeInFlight(const Flight* pFlight, ePlaneType type)
 
 int 	readFlightFromBFile(FILE* fp, Flight* pFlight)
 {
-	int len;
-	if (fread(&len,sizeof(int),1,fp) != 1)
+	*pFlight = *(Flight*)malloc(sizeof(Flight));
+	if (!pFlight)
 		return 0;
 	
-	if (fread(pFlight->sourceCode,sizeof(char),len,fp) != len)
+	if (fread(pFlight->sourceCode,sizeof(char),IATA_LENGTH,fp) != IATA_LENGTH)
 	{
 		free(pFlight->sourceCode);
 		return 0;
 	}
-	if (fread(&len,sizeof(int),1,fp) != 1)
-		return 0;
-	
-	if (fread(pFlight->destCode,sizeof(char),len,fp) != len)
+	pFlight->sourceCode[3] = '\0';
+	if (fread(pFlight->destCode,sizeof(char),IATA_LENGTH,fp) != IATA_LENGTH)
 	{
 		free(pFlight->sourceCode);
 		free(pFlight->destCode);
 		return 0;
 	}
+	pFlight->destCode[3] = '\0';
 	if (fread(&pFlight->flightPlane.serialNum,sizeof(int),1,fp) != 1)
 	{
 		free(pFlight->sourceCode);
@@ -95,16 +94,10 @@ int 	readFlightFromBFile(FILE* fp, Flight* pFlight)
 }
 int     writeFlightToBinFile(FILE* fp, const Flight* pFlight)
 {
-	int len = (int)strlen(pFlight->sourceCode);
-	if (fwrite(&len,sizeof(int),1,fp) != 1)
-		return 0;
-	if (fwrite(pFlight->sourceCode,sizeof(char*),1,fp) != 1)
+	if (fwrite(pFlight->sourceCode,sizeof(char),IATA_LENGTH,fp) != IATA_LENGTH)
 		return 0;
 	
-	len = (int)strlen(pFlight->destCode);
-	if (fwrite(&len,sizeof(int),1,fp) != 1)
-		return 0;
-	if (fwrite(pFlight->destCode,sizeof(char*),1,fp) != 1)
+	if (fwrite(pFlight->destCode,sizeof(char),IATA_LENGTH,fp) != IATA_LENGTH)
 		return 0;
 
 	if (fwrite(&pFlight->flightPlane.serialNum,sizeof(int),1,fp) != 1)
