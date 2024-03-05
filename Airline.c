@@ -116,7 +116,6 @@ int	addFlight(Airline* pComp,const AirportManager* pManager)
 	Plane* thePlane = FindAPlane(pComp);
 	printAirports(pManager);
 	initFlight(pFlight, thePlane,pManager);
-
 	pComp->flightArr = (Flight**)realloc(pComp->flightArr, (pComp->flightCount + 1) * sizeof(Flight*));
 	if (!pComp->flightArr)
 	{

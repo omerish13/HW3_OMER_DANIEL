@@ -6,6 +6,12 @@
     "C_Cpp.codeAnalysis.clangTidy.checks.disabled": [
         "clang-diagnostic-int-conversion",
         "clang-diagnostic-implicit-function-declaration",
-        "clang-diagnostic-incompatible-function-pointer-types"
+        "clang-diagnostic-incompatible-function-pointer-types",
+        "clang-analyzer-security.insecureAPI.DeprecatedOrUnsafeBufferHandling",
+        "clang-diagnostic-incompatible-pointer-types",
+        "clang-diagnostic-warning",
+        "clang-diagnostic-error",
+        "clang-analyzer-unix.Malloc",
+        "clang-diagnostic-format"
     ]
 }
