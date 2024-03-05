@@ -47,6 +47,52 @@ int		isPlaneTypeInFlight(const Flight* pFlight, ePlaneType type)
 	return (pFlight->flightPlane.type == type);
 }
 
+int 	readFlightFromBFile(FILE* fp, Flight* pFlight)
+{
+	int len;
+	if (fread(&len,sizeof(int),1,fp) != 1)
+		return 0;
+	
+	if (fread(pFlight->sourceCode,sizeof(char),len,fp) != len)
+	{
+		free(pFlight->sourceCode);
+		return 0;
+	}
+	if (fread(&len,sizeof(int),1,fp) != 1)
+		return 0;
+	
+	if (fread(pFlight->destCode,sizeof(char),len,fp) != len)
+	{
+		free(pFlight->sourceCode);
+		free(pFlight->destCode);
+		return 0;
+	}
+	if (fread(&pFlight->flightPlane.serialNum,sizeof(int),1,fp) != 1)
+	{
+		free(pFlight->sourceCode);
+		free(pFlight->destCode);
+		return 0;
+	}
+	if (fread(&pFlight->date.day,sizeof(int),1,fp) != 1)
+	{
+		free(pFlight->sourceCode);
+		free(pFlight->destCode);
+		return 0;
+	}
+	if (fread(&pFlight->date.month,sizeof(int),1,fp) != 1)
+	{
+		free(pFlight->sourceCode);
+		free(pFlight->destCode);
+		return 0;
+	}
+	if (fread(&pFlight->date.year,sizeof(int),1,fp) != 1)
+	{
+		free(pFlight->sourceCode);
+		free(pFlight->destCode);
+		return 0;
+	}
+	return 1;
+}
 int     writeFlightToBinFile(FILE* fp, const Flight* pFlight)
 {
 	int len = (int)strlen(pFlight->sourceCode);
@@ -61,15 +107,16 @@ int     writeFlightToBinFile(FILE* fp, const Flight* pFlight)
 	if (fwrite(pFlight->destCode,sizeof(char*),1,fp) != 1)
 		return 0;
 
-	if (fwrite(pFlight->flightPlane.serialNum,sizeof(int),1,fp) != 1)
+	if (fwrite(&pFlight->flightPlane.serialNum,sizeof(int),1,fp) != 1)
 		return 0;
 		
-	if (fwrite(pFlight->date.day,sizeof(int),1,fp) != 1)
+	if (fwrite(&pFlight->date.day,sizeof(int),1,fp) != 1)
 		return 0;
-	if (fwrite(pFlight->date.month,sizeof(int),1,fp) != 1)
+	if (fwrite(&pFlight->date.month,sizeof(int),1,fp) != 1)
 		return 0;
-	if (fwrite(pFlight->date.year,sizeof(int),1,fp) != 1)
+	if (fwrite(&pFlight->date.year,sizeof(int),1,fp) != 1)
 		return 0;
+	return 1;
 }
 
 void	printFlight(const Flight* pFlight)

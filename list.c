@@ -138,7 +138,7 @@ BOOL L_free(LIST* pList,void(*freeFunc)(void*))
 // Input:	pointer to the list structure
 // Output:	a number of the printed elements
 ////////////////////////////////////////////////
-int L_print(const LIST* pList)
+int L_print(const LIST* pList, void(*print)(const void*))
 {
 	NODE	*tmp;
 	int		c = 0;
@@ -150,7 +150,7 @@ int L_print(const LIST* pList)
 	tmp = pList->head.next;
 	while(tmp != NULL)
 	{
-		printf(" %d ---> ", tmp->key);
+		print(tmp->key);
 		c++;
 		tmp = tmp->next;
 	}
