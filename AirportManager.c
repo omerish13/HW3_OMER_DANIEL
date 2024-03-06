@@ -14,7 +14,7 @@
 int		initManager(AirportManager* pManager, const char* fileName)
 {
 	FILE* fp = fopen(fileName, "r");
-	int res = (int)L_init(pManager->airportsList);
+	int res = L_init(pManager->airportsList);
 	if (!fp)
 	{
 		if (res)
@@ -66,22 +66,13 @@ void insertAirport(Airport* pPort, LIST* airportsList)
 	NODE* pNode = &airportsList->head;
 	if (!pNode)
 		return;
-	Airport* airport=(Airport*)pNode->key, *nextAirport;
-	if (strcmp(pPort->code,airport->code))
-	{
-		L_insert(&airportsList->head,pPort);
-		return;
-	}
+	
 	while (pNode->next)
 	{
-		airport = (Airport*)pNode->key;
-		nextAirport = (Airport*)pNode->next->key;
-		if (!airport || !nextAirport)
-			break;
-		if (strcmp(airport->code,pPort->code) >= 0 && strcmp(pPort->code,nextAirport->code))
+		
+		if (strcmp(pPort->code,((Airport*)(pNode->next->key))->code) < 0 )
 		{
-			L_insert(pNode,pPort);
-			return;
+			break;
 		}
 		pNode = pNode->next;
 	}

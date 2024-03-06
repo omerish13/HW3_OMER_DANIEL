@@ -100,13 +100,18 @@ int initAirlineFromFile(Airline* pComp, AirportManager* pManager, const char* fi
 
 int 	initManagerAndAirline(AirportManager* pManager, Airline* pCompany)
 {
-	if (initManager(pManager,FILE_NAME))
+	int res = initManager(pManager,FILE_NAME);
+	if (res == 1)
 	{
 		if (!initAirlineFromFile(pCompany,pManager,BIN_FILE_NAME))
 		{
 			initAirline(pCompany);
 		}
 		return 1;
+	}
+	else if (res == 2)
+	{
+		printf("Can't initialize from file!");
 	}
 	return 0;
 	
