@@ -20,7 +20,7 @@ void	changeName(char* name,int count, char** wordsArray);
 int     readAirportFromTextFile(FILE* fp, Airport* pPort);
 void    writeAirportToTextFile(FILE* fp, Airport* pPort);
 void    getAirportCode(char* code);
-void	printAirport(const Airport* pPort);
-void	freeAirport(Airport* pPort);
+void	printAirport(const void* v);
+void	freeAirport(void* v);
 
 #endif

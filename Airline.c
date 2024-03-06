@@ -101,25 +101,33 @@ int initAirlineFromFile(Airline* pComp, AirportManager* pManager, const char* fi
 int 	initManagerAndAirline(AirportManager* pManager, Airline* pCompany)
 {
 	int res = initManager(pManager,FILE_NAME);
+
 	if (res == 1)
 	{
 		if (!initAirlineFromFile(pCompany,pManager,BIN_FILE_NAME))
 		{
+			printf("Initialize from client");
 			initAirline(pCompany);
 		}
 		return 1;
 	}
 	else if (res == 2)
 	{
-		printf("Can't initialize from file!");
+		printf("Can't initialize from file!\n");
+		return 1;
 	}
+	printf("Can't initialize Manager\n");
 	return 0;
+
+	// initManager(pManager);
+	// initAirline(pCompany);
+	// return 1;
 	
 }
 
 int	addFlight(Airline* pComp,const AirportManager* pManager)
 {
-	if (L_length(&pManager->airportsList->head) < 2)
+	if (L_length(&pManager->airportsList.head) < 2)
 	{
 		printf("There are not enough airport to set a flight\n");
 		return 0;
