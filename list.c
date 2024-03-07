@@ -16,9 +16,12 @@
 //////////////////////////////////////////
 BOOL L_init(LIST* pList)
 {
-	if ( pList == NULL ) 	
+	if ( pList == NULL )
+	{
+		printf("List Does not exist!");
 		return False;	// no list to initialize
-
+	} 	
+	
 	pList->head.next = NULL;
 	return True;
 }
@@ -77,7 +80,7 @@ BOOL L_delete(NODE* pNode, void(*freeFunc)(void*))
 // Input:	pointer to the first node of the list 
 // Output:	length of the linked list
 //////////////////////////////////////////////////////////////
-int L_length(NODE* pNode)
+int L_length(const NODE* pNode)
 {
 	int count = 0;
 	while (pNode)
@@ -138,7 +141,7 @@ BOOL L_free(LIST* pList,void(*freeFunc)(void*))
 // Input:	pointer to the list structure
 // Output:	a number of the printed elements
 ////////////////////////////////////////////////
-int L_print(const LIST* pList)
+int L_print(const LIST* pList, void(*print)(const void*))
 {
 	NODE	*tmp;
 	int		c = 0;
@@ -150,7 +153,7 @@ int L_print(const LIST* pList)
 	tmp = pList->head.next;
 	while(tmp != NULL)
 	{
-		printf(" %d ---> ", tmp->key);
+		print(tmp->key);
 		c++;
 		tmp = tmp->next;
 	}

@@ -13,26 +13,35 @@
 
 int		initManager(AirportManager* pManager, const char* fileName)
 {
+	pManager = (AirportManager*)malloc(sizeof(Airport*));
+	if (!pManager)
+	{
+		printf("Memory allocation for airportmanager failed!");
+		return 0;
+	}
 	FILE* fp = fopen(fileName, "r");
-	int res = (int)L_init(pManager->airportsList);
+	int res = L_init(&pManager->airportsList);
 	if (!fp)
 	{
 		if (res)
+		{
+			printf("List Initialized");
 			return 2;
+		}
 		return 0;
 	}
 	int len = 0;
-	if (scanf(fp,"%d",len) != 1)
+	if (fscanf(fp,"%d",&len) != 1)
 	{
 		fclose(fp);
 		if (res)
 			return 2;
 		return 0;
 	}
-	NODE* pNode = &pManager->airportsList->head;
+	NODE* pNode = &pManager->airportsList.head;
 	for (int i = 0; i < len; i++)
 	{
-		if (!readAirportFromTextFile(fp,pNode))
+		if (!readAirportFromTextFile(fp,(Airport*)pNode))
 		{
 			freeAirportArr(pManager);
 			fclose(fp);
@@ -57,7 +66,7 @@ int	addAirport(AirportManager* pManager)
 		return 0;
 	}
 	
-	insertAirport(pPort,pManager->airportsList);
+	insertAirport(pPort,&pManager->airportsList);
 	return 1;
 }
 
@@ -66,22 +75,13 @@ void insertAirport(Airport* pPort, LIST* airportsList)
 	NODE* pNode = &airportsList->head;
 	if (!pNode)
 		return;
-	Airport* airport=(Airport*)pNode->key, *nextAirport;
-	if (strcmp(pPort->code,airport->code))
-	{
-		L_insert(&airportsList->head,pPort);
-		return;
-	}
+	
 	while (pNode->next)
 	{
-		airport = (Airport*)pNode->key;
-		nextAirport = (Airport*)pNode->next->key;
-		if (!airport || !nextAirport)
-			break;
-		if (strcmp(airport->code,pPort->code) >= 0 && strcmp(pPort->code,nextAirport->code))
+		
+		if (strcmp(pPort->code,((Airport*)(pNode->next->key))->code) < 0 )
 		{
-			L_insert(pNode,pPort);
-			return;
+			break;
 		}
 		pNode = pNode->next;
 	}
@@ -104,13 +104,14 @@ int  initAirport(Airport* pPort, AirportManager* pManager)
 
 Airport* findAirportByCode(const AirportManager* pManager, const char* code)
 {
-	NODE* pNode = &pManager->airportsList->head;
+	const NODE* pNode = &pManager->airportsList.head;
 	Airport* pPort;	
 	while (pNode)
 	{
 		pPort = (Airport*)pNode->key;
 		if (isAirportCode(pPort,code))
 			return pPort;
+		pNode = pNode->next;
 	}
 	return NULL;
 }
@@ -125,11 +126,11 @@ int checkUniqeCode(const char* code,const AirportManager* pManager)
 	return 1;
 }
 
-int     writeAirportManagerToTextFile(AirportManager* pManager)
+int saveManagerToFile(const AirportManager* pManager, const char* fileName)
 {
-	NODE* pNode = &pManager->airportsList->head;
+	const NODE* pNode = &pManager->airportsList.head;
 	FILE* fp;
-	fp = fopen(FILE_NAME,"w");
+	fp = fopen(fileName,"w");
 	if (!fp)
 		return 0;
 	
@@ -137,7 +138,7 @@ int     writeAirportManagerToTextFile(AirportManager* pManager)
 
 	while (pNode)
 	{
-		writeAirportToTextFile(fp,pNode);
+		writeAirportToTextFile(fp,(Airport*)pNode);
 		pNode = pNode->next;
 	}
 
@@ -149,14 +150,9 @@ int     writeAirportManagerToTextFile(AirportManager* pManager)
 
 void	printAirports(const AirportManager* pManager)
 {
-	NODE* pNode = &pManager->airportsList->head;
-	printf("there are %d airports\n", L_length(pNode));
-	while (pNode)
-	{
-		printAirport(pNode);
-		printf("\n");
-		pNode = pNode->next;
-	}
+	printf("there are %d airports\n", L_length(&pManager->airportsList.head));
+	L_print(&pManager->airportsList,printAirport);
+	printf("\n");
 }
 
 void	freeManager(AirportManager* pManager)
@@ -167,5 +163,5 @@ void	freeManager(AirportManager* pManager)
 
 void	freeAirportArr(AirportManager* pManager)
 {
-	L_free(pManager->airportsList,freeAirport);
+	L_free(&pManager->airportsList,freeAirport);
 }

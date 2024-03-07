@@ -17,10 +17,10 @@ int		getAirportName(Airport* pPort);
 char*	allocateRightLength(char** wordsArray,int count,int totalLength);
 void	changeNameOneWord(char* name, const char* word);
 void	changeName(char* name,int count, char** wordsArray);
-Airport* readAirportFromTextFile(FILE* fp, Airport* pPort);
+int     readAirportFromTextFile(FILE* fp, Airport* pPort);
 void    writeAirportToTextFile(FILE* fp, Airport* pPort);
 void    getAirportCode(char* code);
-void	printAirport(const Airport* pPort);
-void	freeAirport(Airport* pPort);
+void	printAirport(const void* v);
+void	freeAirport(void* v);
 
 #endif
