@@ -8,7 +8,7 @@
 
 typedef struct
 {
-	LIST*	airportsList;
+	LIST	airportsList;
 }AirportManager;
 
 // int		initManager(AirportManager* pManager);

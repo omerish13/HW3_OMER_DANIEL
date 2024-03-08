@@ -6,6 +6,8 @@
 #include "Airport.h"
 #include "General.h"
 
+const char* sortOptions[numOfSorts - 1] = { "Sort by source code","Sort by dest code","Sort by date"};
+
 void	initAirline(Airline* pComp)
 {
 	//printf("-----------  Init Airline\n");
@@ -47,7 +49,13 @@ int initAirlineFromFile(Airline* pComp, AirportManager* pManager, const char* fi
 		fclose(fp);
 		return 0;
 	}
-
+	pComp->planeArr = (Plane*)realloc(pComp->planeArr,pComp->planeCount * sizeof(Plane));
+	if (!pComp->planeArr)
+	{
+		free(pComp->name);
+		fclose(fp);
+		return 0;
+	}
 	for (int i = 0; i < pComp->planeCount; i++)
 	{
 		if (!readPlaneFromBFile(fp,&pComp->planeArr[i]))
@@ -66,7 +74,15 @@ int initAirlineFromFile(Airline* pComp, AirportManager* pManager, const char* fi
 		fclose(fp);
 		return 0;
 	}
-
+	pComp->flightArr = (Flight**)realloc(pComp->flightArr,pComp->planeCount * sizeof(Flight*));
+	if (!pComp->flightArr)
+	{
+		free(pComp->name);
+		freePlanes(pComp->planeArr,pComp->planeCount);
+		fclose(fp);
+		return 0;
+	}
+	
 	for (int i = 0; i < pComp->flightCount; i++)
 	{
 		if (!readFlightFromBFile(fp,pComp->flightArr[i]))
@@ -84,21 +100,34 @@ int initAirlineFromFile(Airline* pComp, AirportManager* pManager, const char* fi
 
 int 	initManagerAndAirline(AirportManager* pManager, Airline* pCompany)
 {
-	if (initManager(pManager,FILE_NAME))
+	int res = initManager(pManager,FILE_NAME);
+
+	if (res == 1)
 	{
 		if (!initAirlineFromFile(pCompany,pManager,BIN_FILE_NAME))
 		{
+			printf("Initialize from client");
 			initAirline(pCompany);
 		}
 		return 1;
 	}
+	else if (res == 2)
+	{
+		printf("Can't initialize from file!\n");
+		return 1;
+	}
+	printf("Can't initialize Manager\n");
 	return 0;
+
+	// initManager(pManager);
+	// initAirline(pCompany);
+	// return 1;
 	
 }
 
 int	addFlight(Airline* pComp,const AirportManager* pManager)
 {
-	if (L_length(&pManager->airportsList->head) < 2)
+	if (L_length(&pManager->airportsList.head) < 2)
 	{
 		printf("There are not enough airport to set a flight\n");
 		return 0;

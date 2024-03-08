@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <ctype.h>
+#include <stdlib.h>
 #include "General.h"
 #include "Plane.h"
 
@@ -65,6 +66,7 @@ Plane* findPlaneBySN(Plane* planeArr, int count, int sn)
 }
 int 	readPlaneFromBFile(FILE* fp, Plane* pPlane)
 {
+	*pPlane = *(Plane*)malloc(sizeof(Plane));
 	if (fread(&pPlane->serialNum,sizeof(int),1,fp) != 1)
 		return 0;
 	

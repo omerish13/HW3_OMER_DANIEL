@@ -27,7 +27,7 @@ NODE* L_insert(NODE* pNode, DATA Value);	// add new node after *pNode
 
 BOOL L_delete(NODE* pNode, void(*freeFunc)(void*));					// erase node after *pNode
 
-int  L_length(NODE* pNode);                 // return the length of the linked list
+int  L_length(const NODE* pNode);                 // return the length of the linked list
 
 const NODE* L_find(const NODE* pNode, DATA Value);		// return a pointer to the node 
 

@@ -1,0 +1,13 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "C/C++ Runner: Debug Session",
+      "type": "lldb",
+      "request": "launch",
+      "args": [],
+      "cwd": "/Users/omerishai/Projects/HW3_OMER_DANIEL",
+      "program": "/Users/omerishai/Projects/HW3_OMER_DANIEL/build/Debug/outDebug"
+    }
+  ]
+}
