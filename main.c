@@ -78,6 +78,9 @@ int main()
 		}
 	} while (!stop);
 
+	saveManagerToFile(&manager, FILE_NAME);
+	saveAirlineToFile(&company, BIN_FILE_NAME);
+
 	freeManager(&manager);
 	freeCompany(&company);
 	
