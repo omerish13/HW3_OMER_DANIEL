@@ -114,6 +114,7 @@ int 	initManagerAndAirline(AirportManager* pManager, Airline* pCompany)
 	else if (res == 2)
 	{
 		printf("Can't initialize from file!\n");
+		initAirline(pCompany);
 		return 1;
 	}
 	printf("Can't initialize Manager\n");

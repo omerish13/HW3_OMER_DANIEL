@@ -90,6 +90,7 @@ void insertAirport(Airport* pPort, LIST* airportsList)
 
 int  initAirport(Airport* pPort, AirportManager* pManager)
 {
+
 	while (1)
 	{
 		getAirportCode(pPort->code);
@@ -98,7 +99,7 @@ int  initAirport(Airport* pPort, AirportManager* pManager)
 
 		printf("This code already in use - enter a different code\n");
 	}
-
+	
 	return initAirportNoCode(pPort);
 }
 
@@ -135,7 +136,6 @@ int saveManagerToFile(const AirportManager* pManager, const char* fileName)
 		return 0;
 	
 	fprintf(fp,"%d\n",L_length(pNode));
-
 	while (pNode)
 	{
 		writeAirportToTextFile(fp,(Airport*)pNode);
