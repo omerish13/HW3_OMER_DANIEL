@@ -213,11 +213,11 @@ int    sortFlights(Airline* pComp)
 		return 0;
 	
 	if ((int)(pComp->sortType) == 0)
-		qsort(pComp->flightArr,pComp->flightCount,sizeof(Flight),compareBySourceCode);
+		qsort(pComp->flightArr,pComp->flightCount,sizeof(Flight*),compareBySourceCode);
 	else if ((int)(pComp->sortType) == 1)
-		qsort(pComp->flightArr,pComp->flightCount,sizeof(Flight),compareByDestCode);
+		qsort(pComp->flightArr,pComp->flightCount,sizeof(Flight*),compareByDestCode);
 	else if ((int)(pComp->sortType) == 2)
-		qsort(pComp->flightArr,pComp->flightCount,sizeof(Flight),compareByDate);
+		qsort(pComp->flightArr,pComp->flightCount,sizeof(Flight*),compareByDate);
 	return 1;
 	
 }
@@ -227,9 +227,9 @@ void 	sortFlight(Airline* pComp)
 	
 	printf("\n\n");
 	printf("Please choose one of the following options\n");
-	for(int i = 0 ; i < numOfSorts - 2 ; i++)
+	for(int i = 0 ; i < numOfSorts - 1 ; i++)
 		printf("%d - %s\n",i,sortOptions[i]);
-	scanf("%d", &pComp->sortType);
+	scanf("%u", &pComp->sortType);
 	//clean buffer
 	char tav;
 	scanf("%c", &tav);
@@ -244,11 +244,11 @@ Flight** findFlightBSearch(const Airline* pComp, const Flight* pFlight)
 		return NULL;
 	Flight** pFound = NULL;
 	if ((int)(pComp->sortType) == 0)
-		pFound = (Flight**)bsearch(pFlight,pComp->flightArr,pComp->flightCount,sizeof(Flight*),compareBySourceCode);
+		pFound = (Flight**)bsearch(&pFlight,pComp->flightArr,pComp->flightCount,sizeof(Flight*),compareBySourceCode);
 	else if ((int)(pComp->sortType) == 1)
-		pFound = (Flight**)bsearch(pFlight,pComp->flightArr,pComp->flightCount,sizeof(Flight*),compareByDestCode);
+		pFound = (Flight**)bsearch(&pFlight,pComp->flightArr,pComp->flightCount,sizeof(Flight*),compareByDestCode);
 	else if ((int)(pComp->sortType) == 2)
-		pFound = (Flight**)bsearch(pFlight,pComp->flightArr,pComp->flightCount,sizeof(Flight*),compareByDate);
+		pFound = (Flight**)bsearch(&pFlight,pComp->flightArr,pComp->flightCount,sizeof(Flight*),compareByDate);
 	return pFound;
 }
 
@@ -264,6 +264,7 @@ void 	findFlight(const Airline* pComp)
 	{
 	case notSorted:
 		printf("Flights array not sorted, please sort it first");
+		free(temp);
 		return;
 	case sortByDate:
 		getCorrectDate(&temp->date);
@@ -278,7 +279,12 @@ void 	findFlight(const Airline* pComp)
 		break;
 	}
 	Flight** res = findFlightBSearch(pComp,temp);
-	printFlight((Flight*)res);
+	if (res) 
+        printFlight(*res);
+ 	else
+        printf("Flight not found\n");
+	free(temp);
+	//printFlight((Flight*)res);
 
 }
 

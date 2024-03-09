@@ -13,12 +13,7 @@
 
 int		initManager(AirportManager* pManager, const char* fileName)
 {
-	pManager = (AirportManager*)malloc(sizeof(Airport*));
-	if (!pManager)
-	{
-		printf("Memory allocation for airportmanager failed!");
-		return 0;
-	}
+	
 	FILE* fp = fopen(fileName, "r");
 	int res = L_init(&pManager->airportsList);
 	if (!fp)
@@ -55,7 +50,7 @@ int		initManager(AirportManager* pManager, const char* fileName)
 }
 int	addAirport(AirportManager* pManager)
 {
-	Airport* pPort  = (Airport*)calloc(1, sizeof(Airport));
+	Airport* pPort  = (Airport*)malloc(sizeof(Airport));
 	if (!pPort)
 		return 0;
 
@@ -76,13 +71,8 @@ void insertAirport(Airport* pPort, LIST* airportsList)
 	if (!pNode)
 		return;
 	
-	while (pNode->next)
+	while (pNode->next && strcmp(pPort->code,((Airport*)(pNode->next->key))->code) >= 0 )
 	{
-		
-		if (strcmp(pPort->code,((Airport*)(pNode->next->key))->code) < 0 )
-		{
-			break;
-		}
 		pNode = pNode->next;
 	}
 	L_insert(pNode,pPort);
@@ -105,13 +95,14 @@ int  initAirport(Airport* pPort, AirportManager* pManager)
 
 Airport* findAirportByCode(const AirportManager* pManager, const char* code)
 {
-	const NODE* pNode = &pManager->airportsList.head;
-	Airport* pPort;	
+	const NODE* pNode = pManager->airportsList.head.next;
+	const Airport* pPort;
 	while (pNode)
 	{
-		pPort = (Airport*)pNode->key;
-		if (isAirportCode(pPort,code))
-			return pPort;
+		pPort = (const Airport*)(pNode->key);
+		if (pPort)
+			if (isAirportCode(pPort,code))
+				return pNode->key;
 		pNode = pNode->next;
 	}
 	return NULL;
@@ -120,7 +111,6 @@ Airport* findAirportByCode(const AirportManager* pManager, const char* code)
 int checkUniqeCode(const char* code,const AirportManager* pManager)
 {
 	Airport* port = findAirportByCode(pManager, code);
-
 	if (port != NULL)
 		return 0;
 
@@ -150,7 +140,7 @@ int saveManagerToFile(const AirportManager* pManager, const char* fileName)
 
 void	printAirports(const AirportManager* pManager)
 {
-	printf("there are %d airports\n", L_length(&pManager->airportsList.head));
+	printf("there are %d airports\n", L_length(pManager->airportsList.head.next));
 	L_print(&pManager->airportsList,printAirport);
 	printf("\n");
 }
