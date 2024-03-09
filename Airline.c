@@ -227,7 +227,7 @@ void 	sortFlight(Airline* pComp)
 	
 	printf("\n\n");
 	printf("Please choose one of the following options\n");
-	for(int i = 0 ; i < numOfSorts - 2 ; i++)
+	for(int i = 0 ; i < numOfSorts - 1 ; i++)
 		printf("%d - %s\n",i,sortOptions[i]);
 	scanf("%u", &pComp->sortType);
 	//clean buffer

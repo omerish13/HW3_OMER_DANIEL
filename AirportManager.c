@@ -71,13 +71,8 @@ void insertAirport(Airport* pPort, LIST* airportsList)
 	if (!pNode)
 		return;
 	
-	while (pNode->next)
+	while (pNode->next && strcmp(pPort->code,((Airport*)(pNode->next->key))->code) >= 0 )
 	{
-		
-		if (strcmp(pPort->code,((Airport*)(pNode->next->key))->code) < 0 )
-		{
-			break;
-		}
 		pNode = pNode->next;
 	}
 	L_insert(pNode,pPort);
@@ -100,9 +95,9 @@ int  initAirport(Airport* pPort, AirportManager* pManager)
 
 Airport* findAirportByCode(const AirportManager* pManager, const char* code)
 {
-	const NODE* pNode = &pManager->airportsList.head.next;
+	const NODE* pNode = pManager->airportsList.head.next;
 	const Airport* pPort;
-	while (pNode->key)
+	while (pNode)
 	{
 		pPort = (const Airport*)(pNode->key);
 		if (pPort)
@@ -145,7 +140,7 @@ int saveManagerToFile(const AirportManager* pManager, const char* fileName)
 
 void	printAirports(const AirportManager* pManager)
 {
-	printf("there are %d airports\n", L_length(&pManager->airportsList.head.next));
+	printf("there are %d airports\n", L_length(pManager->airportsList.head.next));
 	L_print(&pManager->airportsList,printAirport);
 	printf("\n");
 }
