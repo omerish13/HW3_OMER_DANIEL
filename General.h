@@ -8,6 +8,7 @@ char*	getStrExactName(const char* msg);
 char*	myGets(char* buffer, int size);
 char*	getDynStr(char* str);
 char**	splitCharsToWords(char* str,int* pCount,int* pTotalLength);
+char*   readStringFromFile(char* buffer, int size, FILE* fp);
 
 
 
