@@ -36,7 +36,7 @@ int initAirlineFromFile(Airline* pComp, AirportManager* pManager, const char* fi
 		fclose(fp);
 		return 0;
 	}
-	if (fread(pComp->name,sizeof(char*),1,fp) != len)
+	if (fread(pComp->name,sizeof(char),len,fp) != len)
 	{
 		free(pComp->name);
 		fclose(fp);
@@ -49,13 +49,14 @@ int initAirlineFromFile(Airline* pComp, AirportManager* pManager, const char* fi
 		fclose(fp);
 		return 0;
 	}
-	pComp->planeArr = (Plane*)realloc(pComp->planeArr,pComp->planeCount * sizeof(Plane));
+	pComp->planeArr = (Plane*)malloc(pComp->planeCount * sizeof(Plane));
 	if (!pComp->planeArr)
 	{
 		free(pComp->name);
 		fclose(fp);
 		return 0;
 	}
+
 	for (int i = 0; i < pComp->planeCount; i++)
 	{
 		if (!readPlaneFromBFile(fp,&pComp->planeArr[i]))
@@ -69,12 +70,13 @@ int initAirlineFromFile(Airline* pComp, AirportManager* pManager, const char* fi
 
 	if (fread(&pComp->flightCount,sizeof(int),1,fp) != 1)
 	{
+		printf("here\n");
 		free(pComp->name);
 		freePlanes(pComp->planeArr,pComp->planeCount);
 		fclose(fp);
 		return 0;
 	}
-	pComp->flightArr = (Flight**)realloc(pComp->flightArr,pComp->planeCount * sizeof(Flight*));
+	pComp->flightArr = (Flight**)malloc(pComp->flightCount * sizeof(Flight*));
 	if (!pComp->flightArr)
 	{
 		free(pComp->name);
@@ -85,14 +87,33 @@ int initAirlineFromFile(Airline* pComp, AirportManager* pManager, const char* fi
 	
 	for (int i = 0; i < pComp->flightCount; i++)
 	{
-		if (!pComp->flightArr[i] || !readFlightFromBFile(fp,pComp->flightArr[i]))
-		{
-			free(pComp->name);
-			freePlanes(pComp->planeArr,pComp->planeCount);
-			freeFlightArr(pComp->flightArr,i);
-			fclose(fp);
-			return 0;
-		}
+		pComp->flightArr[i] = (Flight*)malloc(sizeof(Flight));
+        if (!pComp->flightArr[i])
+        {
+            free(pComp->name);
+            freePlanes(pComp->planeArr, pComp->planeCount);
+            freeFlightArr(pComp->flightArr, i);
+            fclose(fp);
+            return 0;
+        }
+
+		if (!readFlightFromBFile(fp, pComp->flightArr[i]))
+        {
+            free(pComp->name);
+            freePlanes(pComp->planeArr, pComp->planeCount);
+            freeFlightArr(pComp->flightArr, i + 1);
+            fclose(fp);
+            return 0;
+        }
+		
+		// if (!readFlightFromBFile(fp,pComp->flightArr[i]))
+		// {
+		// 	free(pComp->name);
+		// 	freePlanes(pComp->planeArr,pComp->planeCount);
+		// 	freeFlightArr(pComp->flightArr,i);
+		// 	fclose(fp);
+		// 	return 0;
+		// }
 	}
 
 	return 1;

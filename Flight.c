@@ -1,4 +1,3 @@
-#define _USE_MATH_DEFINES
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -49,36 +48,23 @@ int		isPlaneTypeInFlight(const Flight* pFlight, ePlaneType type)
 
 int 	readFlightFromBFile(FILE* fp, Flight* pFlight)
 {
-	pFlight = (Flight*)malloc(sizeof(Flight));
 	if (fread(pFlight->sourceCode,sizeof(char),IATA_LENGTH,fp) != IATA_LENGTH)
-	{
-		free(pFlight->sourceCode);
 		return 0;
-	}
+
 	pFlight->sourceCode[IATA_LENGTH] = '\0';
 
 	if (fread(pFlight->destCode,sizeof(char),IATA_LENGTH,fp) != IATA_LENGTH)
-	{
-		free(pFlight->sourceCode);
-		free(pFlight->destCode);
 		return 0;
-	}
+	
 	pFlight->destCode[IATA_LENGTH] = '\0';
 
 	if (fread(&pFlight->flightPlane.serialNum,sizeof(int),1,fp) != 1)
-	{
-		free(pFlight->sourceCode);
-		free(pFlight->destCode);
 		return 0;
-	}
+
 	if (fread(&pFlight->date.day,sizeof(int),1,fp) != 1 || 
 	fread(&pFlight->date.month,sizeof(int),1,fp) != 1 || 
 	fread(&pFlight->date.year,sizeof(int),1,fp) != 1)
-	{
-		free(pFlight->sourceCode);
-		free(pFlight->destCode);
 		return 0;
-	}
 	
 	return 1;
 }
