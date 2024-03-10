@@ -253,8 +253,6 @@ void 	sortFlight(Airline* pComp)
 	scanf("%c", &tav);
 	if (!sortFlights(pComp))
 		printf("Airline company has less then 2 flights, no need to sort!");
-	else
-		printFlightArr(pComp->flightArr,pComp->flightCount);
 
 }
 
