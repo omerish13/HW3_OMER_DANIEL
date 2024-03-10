@@ -26,22 +26,28 @@ int		initManager(AirportManager* pManager, const char* fileName)
 		return 0;
 	}
 	int len = 0;
-	if (fscanf(fp,"%d",&len) != 1)
+	if (fscanf(fp,"%d\n",&len) != 1)
 	{
 		fclose(fp);
 		if (res)
 			return 2;
 		return 0;
 	}
+
 	NODE* pNode = &pManager->airportsList.head;
+	Airport * pPort;
 	for (int i = 0; i < len; i++)
 	{
-		if (!readAirportFromTextFile(fp,(Airport*)pNode))
+		
+		pPort = (Airport*)malloc(sizeof(Airport));
+		if (!pPort || !readAirportFromTextFile(fp,pPort))
 		{
 			freeAirportArr(pManager);
 			fclose(fp);
 			return 2;
 		}
+		L_insert(pNode,pPort);
+		pNode = pNode->next;
 	}
 
 	fclose(fp);
@@ -119,7 +125,7 @@ int checkUniqeCode(const char* code,const AirportManager* pManager)
 
 int saveManagerToFile(const AirportManager* pManager, const char* fileName)
 {
-	const NODE* pNode = &pManager->airportsList.head;
+	const NODE* pNode = pManager->airportsList.head.next;
 	FILE* fp;
 	fp = fopen(fileName,"w");
 	if (!fp)
@@ -128,7 +134,7 @@ int saveManagerToFile(const AirportManager* pManager, const char* fileName)
 	fprintf(fp,"%d\n",L_length(pNode));
 	while (pNode)
 	{
-		writeAirportToTextFile(fp,(Airport*)pNode);
+		writeAirportToTextFile(fp,(Airport*)pNode->key);
 		pNode = pNode->next;
 	}
 

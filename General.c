@@ -74,3 +74,17 @@ char** splitCharsToWords(char* str, int* pCount, int* pTotalLength)
 	*pCount = count;
 	return wordsArray;
 }
+
+char*   readStringFromFile(char* buffer, int size, FILE* fp)
+{
+	if (buffer != NULL && size > 0)
+	{
+		if (fgets(buffer, size, fp))
+		{
+			buffer[strcspn(buffer,"\n")] = '\0';
+			return buffer;
+		}
+		buffer[0] = '\0';
+	}
+	return NULL;
+}
