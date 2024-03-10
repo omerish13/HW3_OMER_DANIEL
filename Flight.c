@@ -49,65 +49,34 @@ int		isPlaneTypeInFlight(const Flight* pFlight, ePlaneType type)
 
 int 	readFlightFromBFile(FILE* fp, Flight* pFlight)
 {
-	*pFlight = *(Flight*)malloc(sizeof(Flight));
-	if (!pFlight)
+	if (fread(pFlight->sourceCode,sizeof(char),IATA_LENGTH,fp) != IATA_LENGTH)
+		return 0;
+
+	pFlight->sourceCode[IATA_LENGTH] = '\0';
+
+	if (fread(pFlight->destCode,sizeof(char),IATA_LENGTH,fp) != IATA_LENGTH)
 		return 0;
 	
-	if (fread(pFlight->sourceCode,sizeof(char),IATA_LENGTH,fp) != IATA_LENGTH)
-	{
-		free(pFlight->sourceCode);
-		return 0;
-	}
-	pFlight->sourceCode[3] = '\0';
-	if (fread(pFlight->destCode,sizeof(char),IATA_LENGTH,fp) != IATA_LENGTH)
-	{
-		free(pFlight->sourceCode);
-		free(pFlight->destCode);
-		return 0;
-	}
-	pFlight->destCode[3] = '\0';
+	pFlight->destCode[IATA_LENGTH] = '\0';
+
 	if (fread(&pFlight->flightPlane.serialNum,sizeof(int),1,fp) != 1)
-	{
-		free(pFlight->sourceCode);
-		free(pFlight->destCode);
 		return 0;
-	}
-	if (fread(&pFlight->date.day,sizeof(int),1,fp) != 1)
-	{
-		free(pFlight->sourceCode);
-		free(pFlight->destCode);
+
+	if (fread(&pFlight->date.day,sizeof(int),1,fp) != 1 || 
+	fread(&pFlight->date.month,sizeof(int),1,fp) != 1 || 
+	fread(&pFlight->date.year,sizeof(int),1,fp) != 1)
 		return 0;
-	}
-	if (fread(&pFlight->date.month,sizeof(int),1,fp) != 1)
-	{
-		free(pFlight->sourceCode);
-		free(pFlight->destCode);
-		return 0;
-	}
-	if (fread(&pFlight->date.year,sizeof(int),1,fp) != 1)
-	{
-		free(pFlight->sourceCode);
-		free(pFlight->destCode);
-		return 0;
-	}
+	
 	return 1;
 }
 int     writeFlightToBinFile(FILE* fp, const Flight* pFlight)
 {
-	if (fwrite(pFlight->sourceCode,sizeof(char),IATA_LENGTH,fp) != IATA_LENGTH)
-		return 0;
-	
-	if (fwrite(pFlight->destCode,sizeof(char),IATA_LENGTH,fp) != IATA_LENGTH)
-		return 0;
-
-	if (fwrite(&pFlight->flightPlane.serialNum,sizeof(int),1,fp) != 1)
-		return 0;
-		
-	if (fwrite(&pFlight->date.day,sizeof(int),1,fp) != 1)
-		return 0;
-	if (fwrite(&pFlight->date.month,sizeof(int),1,fp) != 1)
-		return 0;
-	if (fwrite(&pFlight->date.year,sizeof(int),1,fp) != 1)
+	if (fwrite(pFlight->sourceCode,sizeof(char),IATA_LENGTH,fp) != IATA_LENGTH ||
+	fwrite(pFlight->destCode,sizeof(char),IATA_LENGTH,fp) != IATA_LENGTH ||
+	fwrite(&pFlight->flightPlane.serialNum,sizeof(int),1,fp) != 1 ||
+	fwrite(&pFlight->date.day,sizeof(int),1,fp) != 1 ||
+	fwrite(&pFlight->date.month,sizeof(int),1,fp) != 1 ||
+	fwrite(&pFlight->date.year,sizeof(int),1,fp) != 1)
 		return 0;
 	return 1;
 }

@@ -37,23 +37,71 @@ int	initAirportNoCode(Airport* pPort)
 		return 0;
 	return 1;
 }
-int readAirportFromTextFile(FILE* fp, Airport* pPort)
-{
-	char name[255] = {0}, country[255] = {0};
-	if (fscanf(fp,"%s%s%s",name,country,pPort->code) != 3)
+
+// int readAirportFromTextFile(FILE* fp, Airport* pPort) {
+//     char name[256], country[256], code[256];
+
+//     // Read airport name
+//     if (fgets(name, sizeof(name), fp) == NULL) return 0;
+//     name[strcspn(name, "\n")] = 0; // Remove newline character
+
+//     // Read country
+//     if (fgets(country, sizeof(country), fp) == NULL) return 0;
+//     country[strcspn(country, "\n")] = 0; // Remove newline character
+
+//     // Read airport code
+//     if (fgets(code, sizeof(code), fp) == NULL) return 0;
+//     code[strcspn(code, "\n")] = 0; // Remove newline character
+
+//     // Allocate and set airport fields
+//     pPort->name = strdup(name);
+//     pPort->country = strdup(country);
+//     strncpy(pPort->code, code, sizeof(pPort->code) - 1);
+//     pPort->code[sizeof(pPort->code) - 1] = '\0'; // Ensure null-termination
+
+//     return 1;
+// }
+
+
+int readAirportFromTextFile(FILE* fp, Airport* pPort) {
+	char temp[MAX_STR_LEN];
+	if (!pPort)
 		return 0;
-	pPort->name = strdup(name);
-	if (!pPort->name)
-		return 0;
-	pPort->country = strdup(country);
-	if (!pPort->country)
-		return 0;
+	
+	readStringFromFile(temp, MAX_STR_LEN, fp);
+	pPort->name = getDynStr(temp);
+	readStringFromFile(temp, MAX_STR_LEN, fp);
+	pPort->country = getDynStr(temp);
+	fscanf(fp, "%s\n", pPort->code);
 	return 1;
 }
-void     writeAirportToTextFile(FILE* fp, Airport* pPort)
-{
-	fprintf(fp,"%s\t%s\t%s\n",pPort->name,pPort->country,pPort->code);
+
+// int readAirportFromTextFile(FILE* fp, Airport* pPort)
+// {
+	
+// 	char name[MAX_STR_LEN] = {0}, country[MAX_STR_LEN] = {0};
+	
+// 	if (fscanf(fp,"%s\n%s\n%s\n",name,country,pPort->code) != 3)
+// 		return 0;
+// 	pPort->name = strdup(name);
+// 	if (!pPort->name)
+// 		return 0;
+// 	pPort->country = strdup(country);
+// 	if (!pPort->country)
+// 		return 0;
+// 	return 1;
+// }
+
+void writeAirportToTextFile(FILE* fp, Airport* pPort) {
+    fprintf(fp, "%s\n", pPort->name);    // Write airport name to file
+    fprintf(fp, "%s\n", pPort->country); // Write country to file
+    fprintf(fp, "%s\n", pPort->code);    // Write airport code to file
 }
+
+// void     writeAirportToTextFile(FILE* fp, Airport* pPort)
+// {
+// 	fprintf(fp,"%s\n%s\n%s\n",pPort->name,pPort->country,pPort->code);
+// }
 
 void	printAirport(const void* v)
 {
@@ -181,4 +229,3 @@ void	freeAirport(void* v)
 	free(pPort->name);
 	free(pPort->country);
 }
-

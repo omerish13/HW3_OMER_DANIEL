@@ -22,8 +22,7 @@ int main()
 	AirportManager	manager;
 	Airline			company;
 
-	if (!initManagerAndAirline(&manager,&company))
-		return 0;
+	initManagerAndAirline(&manager,&company);
 
 	int option;
 	int stop = 0;
