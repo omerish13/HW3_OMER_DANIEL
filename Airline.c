@@ -97,7 +97,7 @@ int initAirlineFromFile(Airline* pComp, AirportManager* pManager, const char* fi
             return 0;
         }
 
-		if (!readFlightFromBFile(fp, pComp->flightArr[i]))
+		if (!readFlightFromBFile(fp, pComp->flightArr[i],pComp))
         {
             free(pComp->name);
             freePlanes(pComp->planeArr, pComp->planeCount);
@@ -119,32 +119,29 @@ int initAirlineFromFile(Airline* pComp, AirportManager* pManager, const char* fi
 	return 1;
 }
 
-int 	initManagerAndAirline(AirportManager* pManager, Airline* pCompany)
+int 	readFlightFromBFile(FILE* fp, Flight* pFlight,Airline* pComp)
 {
-	int res = initManager(pManager,FILE_NAME);
+	if (fread(pFlight->sourceCode,sizeof(char),IATA_LENGTH,fp) != IATA_LENGTH)
+		return 0;
 
-	if (res == 1)
-	{
-		if (!initAirlineFromFile(pCompany,pManager,BIN_FILE_NAME))
-		{
-			printf("Initialize from client\n");
-			initAirline(pCompany);
-		}
-		return 1;
-	}
-	else if (res == 2)
-	{
-		printf("Can't initialize from file!\n");
-		initAirline(pCompany);
-		return 1;
-	}
-	printf("Can't initialize Manager\n");
-	return 0;
+	pFlight->sourceCode[IATA_LENGTH] = '\0';
 
-	// initManager(pManager);
-	// initAirline(pCompany);
-	// return 1;
+	if (fread(pFlight->destCode,sizeof(char),IATA_LENGTH,fp) != IATA_LENGTH)
+		return 0;
 	
+	pFlight->destCode[IATA_LENGTH] = '\0';
+
+	int serialNum;
+	if (fread(&serialNum,sizeof(int),1,fp) != 1)
+		return 0;
+	pFlight->flightPlane = *(findPlaneBySN(pComp->planeArr,pComp->planeCount,serialNum));
+
+	if (fread(&pFlight->date.day,sizeof(int),1,fp) != 1 || 
+	fread(&pFlight->date.month,sizeof(int),1,fp) != 1 || 
+	fread(&pFlight->date.year,sizeof(int),1,fp) != 1)
+		return 0;
+	
+	return 1;
 }
 
 int	addFlight(Airline* pComp,const AirportManager* pManager)
@@ -256,8 +253,6 @@ void 	sortFlight(Airline* pComp)
 	scanf("%c", &tav);
 	if (!sortFlights(pComp))
 		printf("Airline company has less then 2 flights, no need to sort!");
-	else
-		printFlightArr(pComp->flightArr,pComp->flightCount);
 
 }
 

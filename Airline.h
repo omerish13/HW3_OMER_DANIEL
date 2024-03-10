@@ -21,7 +21,7 @@ typedef struct
 
 void	initAirline(Airline* pComp);
 int 	initAirlineFromFile(Airline* pComp, AirportManager* pManager, const char* fileName);
-int 	initManagerAndAirline(AirportManager* pManager, Airline* pCompany);
+int 	readFlightFromBFile(FILE* fp, Flight* pFlight, Airline* pComp);
 int		addFlight(Airline* pComp,const AirportManager* pManager);
 int		addPlane(Airline* pComp);
 Plane*	FindAPlane(Airline* pComp);

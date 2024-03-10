@@ -16,6 +16,7 @@ const char* str[eNofOptions] = { "Add Airport","Add Plane","Add Flight",
 
 #define EXIT			-1
 int menu();
+int 	initManagerAndAirline(AirportManager* pManager, Airline* pCompany);
 
 int main()
 {
@@ -100,4 +101,32 @@ int menu()
 	char tav;
 	scanf("%c", &tav);
 	return option;
+}
+
+int 	initManagerAndAirline(AirportManager* pManager, Airline* pCompany)
+{
+	int res = initManager(pManager,FILE_NAME);
+
+	if (res == 1)
+	{
+		if (!initAirlineFromFile(pCompany,pManager,BIN_FILE_NAME))
+		{
+			printf("Initialize from client\n");
+			initAirline(pCompany);
+		}
+		return 1;
+	}
+	else if (res == 2)
+	{
+		printf("Can't initialize from file!\n");
+		initAirline(pCompany);
+		return 1;
+	}
+	printf("Can't initialize Manager\n");
+	return 0;
+
+	// initManager(pManager);
+	// initAirline(pCompany);
+	// return 1;
+	
 }
